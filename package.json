@@ -1,0 +1,95 @@
+{
+  "name": "todo",
+  "version": "0.0.0",
+  "description": "yet another todo app to show zero effort testing with allrounder",
+  "scripts": {
+    "start": "./node_modules/.bin/nodemon --watch src --exec \"./node_modules/.bin/babel-node src/server.js\"",
+    "build": "rm -rf dist && mkdir dist && mkdir dist/root && ./node_modules/.bin/babel src -d dist && ./node_modules/.bin/babel-node scripts/build && cp README.md dist/",
+    "test": "npm test -- -s src",
+    "prodtest": "npm test -- -s dist",
+    "devtest": "./node_modules/.bin/cross-env NODE_ENV=test ./node_modules/.bin/nyc ./node_modules/.bin/allrounder",
+    "all": "npm run lint && npm test && npm run build && npm run prodtest && npm run docs",
+    "docs": "./node_modules/.bin/jsdoc -c .jsdoc.json",
+    "lint": "./node_modules/.bin/eslint src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/codeofnode/todo.git"
+  },
+  "keywords": [
+    "todo",
+    "config",
+    "modular",
+    "allrounder",
+    "json"
+  ],
+  "author": "Ramesh Kumar <codeofnode@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/codeofnode/petu",
+  "devDependencies": {
+    "allrounder": "latest",
+    "babel-cli": "^6.26.0",
+    "babel-plugin-istanbul": "^5.1.4",
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "babel-plugin-transform-regenerator": "^6.26.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-es2017": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "cross-env": "^5.0.0",
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb": "^15.0.1",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^5.0.1",
+    "eslint-plugin-react": "^7.0.1",
+    "istanbul": "^0.4.5",
+    "jsdoc": "^3.6.2",
+    "json": "^9.0.6",
+    "minami": "^1.2.3",
+    "mocha": "^6.1.4",
+    "nodemon": "^1.19.1",
+    "nyc": "^14.1.1"
+  },
+  "nyc": {
+    "require": [
+      "babel-register"
+    ],
+    "reporter": [
+      "lcov",
+      "text"
+    ],
+    "sourceMap": false,
+    "instrument": false
+  },
+  "babel": {
+    "plugins": [
+      "transform-async-to-generator",
+      "transform-runtime"
+    ],
+    "presets": [
+      "es2017",
+      "stage-2",
+      [
+        "env",
+        {
+          "targets": {
+            "node": "8.2.1"
+          }
+        }
+      ]
+    ],
+    "env": {
+      "test": {
+        "plugins": [
+          "istanbul"
+        ]
+      }
+    }
+  },
+  "engines": {
+    "node": ">=8.2.1"
+  },
+  "dependencies": {
+    "babel-runtime": "^6.26.0"
+  }
+}
