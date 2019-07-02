@@ -5,9 +5,9 @@
   "scripts": {
     "start": "./node_modules/.bin/nodemon --watch src --exec \"./node_modules/.bin/babel-node src/server.js\"",
     "build": "rm -rf dist && mkdir dist && mkdir dist/root && ./node_modules/.bin/babel src -d dist && ./node_modules/.bin/babel-node scripts/build && cp README.md dist/",
-    "test": "npm test -- -s src",
-    "prodtest": "npm test -- -s dist",
-    "devtest": "./node_modules/.bin/cross-env NODE_ENV=test ./node_modules/.bin/nyc ./node_modules/.bin/allrounder",
+    "test": "npm run allrounder -- -s src",
+    "prodtest": "npm run allrounder -- -s dist",
+    "allrounder": "./node_modules/.bin/cross-env NODE_ENV=test ./node_modules/.bin/nyc ./node_modules/.bin/allrounder",
     "all": "npm run lint && npm test && npm run build && npm run prodtest && npm run docs",
     "docs": "./node_modules/.bin/jsdoc -c .jsdoc.json",
     "lint": "./node_modules/.bin/eslint src"
