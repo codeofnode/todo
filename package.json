@@ -3,14 +3,15 @@
   "version": "0.0.0",
   "description": "yet another todo app to show zero effort testing with allrounder",
   "scripts": {
-    "start": "./node_modules/.bin/nodemon --watch src --exec \"./node_modules/.bin/babel-node ./node_modules/.bin/json2server -f src/swagger.yml\"",
-    "build": "rm -rf dist && mkdir dist && ./node_modules/.bin/babel src -d dist && ./node_modules/.bin/babel-node scripts/build && cp README.md src/swagger.yml dist/",
+    "start": "./node_modules/.bin/nodemon --watch src --exec \"./node_modules/.bin/babel-node scripts/build dev && ./node_modules/.bin/babel-node index.js\"",
+    "build": "rm -rf dist && mkdir dist && ./node_modules/.bin/babel src -d dist && ./node_modules/.bin/babel-node scripts/build dist && cp README.md dist/ && rsync -zqarv --prune-empty-dirs --include=\"*/\" --include=\"*.yml\" --exclude=\"*\" src/ dist",
     "test": "npm run allrounder -- -s src",
-    "prodtest": "npm run allrounder -- -s dist",
-    "allrounder": "./node_modules/.bin/cross-env NODE_ENV=test ./node_modules/.bin/nyc ./node_modules/.bin/allrounder",
-    "all": "npm run lint && npm test && npm run build && npm run prodtest && npm run docs",
+    "disttest": "npm run allrounder -- -s dist",
+    "allrounder": "./node_modules/.bin/nyc ./node_modules/.bin/allrounder",
+    "all": "npm run lint && npm test && npm run build && npm run disttest && npm run docs",
     "docs": "./node_modules/.bin/jsdoc -c .jsdoc.json",
-    "lint": "./node_modules/.bin/eslint src"
+    "lint": "./node_modules/.bin/standard --fix src",
+    "conf": "rm -f src/app/config.json && ./node_modules/.bin/babel-node scripts/build reset"
   },
   "repository": {
     "type": "git",
@@ -25,71 +26,38 @@
   ],
   "author": "Ramesh Kumar <codeofnode@gmail.com>",
   "license": "MIT",
-  "homepage": "https://github.com/codeofnode/petu",
+  "homepage": "https://github.com/codeofnode/todo",
   "devDependencies": {
+    "@babel/cli": "^7.7.0",
+    "@babel/core": "^7.7.2",
+    "@babel/node": "^7.7.0",
+    "@babel/polyfill": "^7.7.0",
+    "@babel/preset-env": "^7.7.1",
     "allrounder": "latest",
-    "babel-cli": "^6.26.0",
-    "babel-plugin-istanbul": "^5.1.4",
-    "babel-plugin-transform-async-to-generator": "^6.24.1",
-    "babel-plugin-transform-regenerator": "^6.26.0",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-es2017": "^6.24.1",
-    "babel-preset-stage-2": "^6.24.1",
-    "cross-env": "^5.0.0",
-    "eslint": "^3.19.0",
-    "eslint-config-airbnb": "^15.0.1",
-    "eslint-plugin-import": "^2.2.0",
-    "eslint-plugin-jsx-a11y": "^5.0.1",
-    "eslint-plugin-react": "^7.0.1",
-    "istanbul": "^0.4.5",
-    "jsdoc": "^3.6.2",
-    "json": "^9.0.6",
+    "babel-plugin-istanbul": "^5.2.0",
+    "jsdoc": "^3.6.3",
     "minami": "^1.2.3",
-    "mocha": "^6.1.4",
-    "nodemon": "^1.19.1",
-    "nyc": "^14.1.1"
+    "mocha": "^6.2.2",
+    "nodemon": "^1.19.4",
+    "nyc": "^14.1.1",
+    "standard": "^14.3.1"
   },
   "nyc": {
-    "require": [
-      "babel-register"
-    ],
-    "reporter": [
-      "lcov",
-      "text"
-    ],
-    "sourceMap": false,
-    "instrument": false
+    "extends": "@istanbuljs/nyc-config-babel"
   },
   "babel": {
     "plugins": [
-      "transform-async-to-generator",
-      "transform-runtime"
+      "istanbul"
     ],
     "presets": [
-      "es2017",
-      "stage-2",
-      [
-        "env",
-        {
-          "targets": {
-            "node": "8.2.1"
-          }
-        }
-      ]
-    ],
-    "env": {
-      "test": {
-        "plugins": [
-          "istanbul"
-        ]
-      }
-    }
+      "@babel/env"
+    ]
   },
   "engines": {
-    "node": ">=8.2.1"
+    "node": ">=10"
   },
   "dependencies": {
-    "babel-runtime": "^6.26.0"
+    "read-env": "^1.3.0",
+    "templist": "0.0.7"
   }
 }
