@@ -7,7 +7,7 @@
         "method": "default"
       },
       "assertions": {
-        "error.message": "Cannot read property 'type' of undefined"
+        "output": 1
       }
     }
   ]

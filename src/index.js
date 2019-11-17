@@ -1,3 +1,3 @@
-import { Application, config } from './app'
+import Application from './app'
 
-Application.main(config)
+Application()

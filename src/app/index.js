@@ -51,7 +51,7 @@ class Application {
    * The main entry function of the application
    *
    */
-  static async main (conf) {
+  static async main (conf = config) {
     const app = new Application(conf)
     app.require()
     await app.init()
@@ -63,6 +63,7 @@ class Application {
         process.exit(successExit ? 0 : 1)
       })
     })
+    return 1
   }
 
   /**
@@ -163,3 +164,4 @@ class Application {
 }
 
 export { Application, config }
+export default Application.main
