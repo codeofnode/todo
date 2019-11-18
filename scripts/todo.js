@@ -31,13 +31,13 @@ switch (label) {
     process.exit(1)
 }
 
-const createIssue = function (currRelease) {
-  return process.argv[5] || octokit.issues.create({
+const createIssue = async function (currRelease) {
+  return process.argv[5] || (await octokit.issues.create({
     owner,
     repo: pkg.name,
     title: title,
     labels: ['ToBe' + label, currRelease]
-  })
+  })).number
 }
 
 const getRelease = async function () {
