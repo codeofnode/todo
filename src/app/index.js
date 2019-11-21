@@ -38,7 +38,7 @@ class Application {
   /**
    * Create an instance of Application class
    *
-   * @param {config} config the global app config options
+   * @param {Object} config the global app config options
    */
   constructor (config) {
     this.config = config
