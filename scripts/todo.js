@@ -1,15 +1,12 @@
 import fs from 'fs'
 import { promisify } from 'util'
-import { exec } from 'child_process'
 
 import pkg from '../package.json'
-
-import { Release } from './release'
-import gitkit from './gitkit'
+import { Git } from './git'
+import { gitkit } from './gitkit'
 
 const TODO_PATH = 'TODO.md'
 const writeFile = promisify(fs.writeFile)
-const execute = promisify(exec)
 let currRelease
 
 /**
@@ -42,20 +39,6 @@ class Todo {
   }
 
   /**
-   * Get the current release from git command
-   *
-   * @returns {String} the release version
-   */
-  static async getRelease () {
-    const release = (await execute('git symbolic-ref --short HEAD')).stdout
-    const sps = release.split('-').shift().split('.')
-    if (sps.length !== 3) {
-      throw new Error('Release not found from branch ' + release)
-    }
-    return sps.join('.')
-  }
-
-  /**
    * Create issue if not already created
    *
    * @returns {Number} The issue number which is created or to be assigned
@@ -66,7 +49,7 @@ class Todo {
         owner: this.owner,
         repo: this.repo,
         title: this.title,
-        labels: ['ToBe' + this.label, this.release]
+        labels: [this.label, this.release]
       })
     }
     return this.issueNumber
@@ -93,7 +76,7 @@ class Todo {
     if (currentTODO.indexOf('## [' + release + ']') === -1) {
       sps.splice(2, 0, '',
         '## [' + release + ']',
-        '### To Be ' + this.label,
+        '### ' + this.label,
         '- [' + release + '-' + issueNumber + '] ' + this.title
       )
       linkSps.push('  [' + release + ']: ' + this.homepage + '/tree/' + release)
@@ -110,13 +93,13 @@ class Todo {
           noL = true
           break
         }
-        if (sps[j].indexOf('### To Be ' + this.label) === 0) {
+        if (sps[j].indexOf('### ' + this.label) === 0) {
           break
         }
       }
       if (noL || j >= ln) {
         sps.splice(k + 1, 0,
-          '### To Be ' + this.label,
+          '### ' + this.label,
           '- [' + release + '-' + issueNumber + '] ' + this.title
         )
       } else {
@@ -125,7 +108,7 @@ class Todo {
       }
     }
     return writeFile(
-      'TODO.md',
+      this.todoPath,
       sps.join('\n') +
         '\n\n\n' +
         linkSps.sort((a, b) =>
@@ -143,7 +126,7 @@ class Todo {
   async main () {
     const currRelease = this.release
     const issueNumber = await this.createIssue(currRelease)
-    await execute('git checkout -b ' + currRelease + '-' + issueNumber + ' ' + currRelease)
+    await Git.checkout(currRelease + '-' + issueNumber, currRelease)
     return this.appendIntoTODO(currRelease, issueNumber)
   }
 }
@@ -152,22 +135,22 @@ if (require.main === module) {
   const owner = pkg.homepage.split('/')[3]
   const repo = pkg.homepage.split('/')[4]
   let title = process.argv[3]
-  let label = process.argv[2]
   const argvLength = process.argv.length
   if (process.argv[argvLength - 1].split('.').length !== 3 && process.argv[4].split(' ').length > 1) {
     title = process.argv.slice(3).join(' ')
     process.argv[4] = 0
   }
+  let label = process.argv[2]
   switch (label) {
-    case 'a': label = 'Added'; break
-    case 'f': label = 'Fixed'; break
-    case 'c': label = 'Changed'; break
-    case 'd': label = 'Removed'; break
+    case 'a': label = 'Additions'; break
+    case 'f': label = 'Fixes'; break
+    case 'c': label = 'Changes'; break
+    case 'd': label = 'Removals'; break
     default :
       console.log('Invalid type')
       process.exit(1)
   }
-  currRelease = process.argv[4] || Release.getRelease()
+  currRelease = process.argv[4] || Git.getCurrRelease()
   const task = new Todo({
     owner, title, repo, label, release: currRelease, homepage: pkg.homepage
   }, process.argv[5])
@@ -175,3 +158,4 @@ if (require.main === module) {
 }
 
 export { Todo }
+export default Todo

@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "description": "yet another todo app to show zero effort testing with allrounder",
   "scripts": {
-    "start": "./node_modules/.bin/nodemon --watch src --exec \"./node_modules/.bin/babel-node scripts/build dev && ./node_modules/.bin/babel-node index.js\"",
-    "build": "rm -rf dist && mkdir dist && ./node_modules/.bin/babel src -d dist && ./node_modules/.bin/babel-node scripts/build dist && cp README.md dist/ && rsync -zqarv --prune-empty-dirs --include=\"*/\" --include=\"*.yml\" --exclude=\"*\" src/ dist",
+    "start": "./node_modules/.bin/nodemon --watch src --exec \"node scripts/build dev && node index.js\"",
+    "build": "rm -rf dist && mkdir dist && ./node_modules/.bin/babel src -d dist && ./node_modules/.bin/babel-node scripts/build dist && cp README.md dist/ && rsync -zqarv --prune-empty-dirs --include=\"*/\" --include=\"*.json\" --include=\"*.yml\" --exclude=\"*\" src/ dist",
     "devtest": "./node_modules/.bin/nodemon --watch src --exec \"npm test\"",
     "test": "npm run allrounder -- -s src",
     "disttest": "npm run allrounder -- -s dist",
@@ -12,7 +12,7 @@
     "all": "npm run lint && npm test && npm run build && npm run disttest && npm run docs",
     "docs": "./node_modules/.bin/jsdoc -c .jsdoc.json",
     "lint": "./node_modules/.bin/standard --fix src",
-    "conf": "rm -f src/app/config.json && ./node_modules/.bin/babel-node scripts/build reset",
+    "conf": "rm -f src/mb-app/config.json && ./node_modules/.bin/babel-node scripts/build reset",
     "todo": "./node_modules/.bin/babel-node scripts/todo",
     "release": "./node_modules/.bin/babel-node scripts/release"
   },
@@ -34,7 +34,6 @@
     "@babel/cli": "^7.7.0",
     "@babel/core": "^7.7.2",
     "@babel/node": "^7.7.0",
-    "@babel/plugin-transform-runtime": "^7.6.2",
     "@babel/polyfill": "^7.7.0",
     "@babel/preset-env": "^7.7.1",
     "@istanbuljs/nyc-config-babel": "^2.1.1",
@@ -49,18 +48,10 @@
     "standard": "^14.3.1"
   },
   "nyc": {
-    "extends": "@istanbuljs/nyc-config-babel"
+    "extends": "@istanbuljs/nyc-config-babel",
+    "check-coverage": true
   },
   "babel": {
-    "plugins": [
-      "istanbul",
-      [
-        "@babel/plugin-transform-runtime",
-        {
-          "regenerator": true
-        }
-      ]
-    ],
     "presets": [
       "@babel/env"
     ]

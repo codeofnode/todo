@@ -1,5 +1,5 @@
 #! /usr/bin/env node
 
-import Application from './app'
+import Application from './mb-app'
 
 Application()

@@ -5,4 +5,4 @@ coverage/
 docs
 .npm
 dist
-src/app/config.json
+src/mb-app/config.json

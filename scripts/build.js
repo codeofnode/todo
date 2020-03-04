@@ -1,12 +1,14 @@
 import fs from 'fs'
 import { promisify } from 'util'
-import { utils } from 'templist'
-
+import templist from 'templist'
 import pkg from '../package.json'
+
+const utils = templist.utils
 
 const writeFile = promisify(fs.writeFile)
 const DIST_PKG_PATH = 'dist/package.json'
-const APP_CNF_PATH = 'src/app/config.json'
+const MB_APP = 'mb-app'
+const APP_CNF_PATH = 'src/' + MB_APP + '/config.json'
 
 /**
  * @module build
@@ -58,7 +60,7 @@ class Build {
     }) => ({
       name, description, version, keywords, homepage
     }))(pkg)
-    cnf = { app: cnf }
+    cnf = { [MB_APP]: cnf }
     utils.assign(cnf, pkg.config)
     fs.readdirSync('src')
       .filter(sec => !sec.startsWith('.') && !sec.endsWith('app') &&

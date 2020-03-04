@@ -3,7 +3,8 @@ import { promisify } from 'util'
 import { exec } from 'child_process'
 
 import pkg from '../package.json'
-import gitkit from './gitkit'
+import { gitkit } from './gitkit'
+import Todo from './todo'
 
 const CHNGLOG_PATH = 'CHANGELOG.md'
 const writeFile = promisify(fs.writeFile)

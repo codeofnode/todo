@@ -50,9 +50,10 @@ class Application {
   /**
    * The main entry function of the application
    *
+   * @param {Object} config the app config
    */
-  static async main (conf = config) {
-    const app = new Application(conf)
+  static async main (conf) {
+    const app = new Application(Object.assign({}, config, conf))
     app.require()
     await app.init()
     await app.start()
@@ -73,7 +74,7 @@ class Application {
    */
   require (modules) {
     (modules || this.modules).forEach(sec => {
-      this.AllModules[sec] = require(join(__dirname, sec))
+      this.AllModules[sec] = require(join(this.srcdir, sec))
     })
   }
 
