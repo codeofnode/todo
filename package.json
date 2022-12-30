@@ -42,7 +42,7 @@
     "babel-plugin-istanbul": "^5.2.0",
     "jsdoc": "^3.6.3",
     "minami": "^1.2.3",
-    "mocha": "^6.2.2",
+    "mocha": "^10.2.0",
     "nodemon": "^1.19.4",
     "nyc": "^14.1.1",
     "standard": "^14.3.1"
